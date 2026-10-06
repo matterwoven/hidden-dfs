@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -69,5 +70,44 @@ public class Traverse {
     v45.neighbors = new ArrayList<>(List.of(v23));
     v23.neighbors = new ArrayList<>(List.of());
     v67.neighbors = new ArrayList<>(List.of(v91));
+
+    printGossipers(grace);
+
+    System.out.println(lowestOfReachable(graph, 45));
+  }
+
+  public static int lowestOfReachable(Map<Integer, Set<Integer>> graph, int start){
+    if(graph == null) throw new NullPointerException("Cannot find minimum of missing graph");
+    Set<Integer> visited = new HashSet<>();
+    int min = lowestOfReachable(graph, start, visited);
+    return min;
+  }
+
+  private static int lowestOfReachable(Map<Integer, Set<Integer>> graph, int current, Set<Integer> visited){
+    if(graph == null) return Integer.MAX_VALUE;
+    if(visited.contains(current)) return Integer.MAX_VALUE;
+    visited.add(current);
+    
+    int min = current;
+    
+    for(int neighbor : graph.get(current)){
+      int minFromNeighbor = lowestOfReachable(graph, neighbor, visited);
+      if(minFromNeighbor < min) min = minFromNeighbor;
+    }
+    return min;
+  }
+
+
+  public static void printGossipers(Person initial){
+    List<Person> e = new LinkedList<>();
+    printGossipers(initial, e);
+  }
+  public static void printGossipers(Person current, List<Person> e){
+    if(current == null || e.contains(current)) return;
+    e.add(current);
+    System.out.println(current.getName());
+    for(Person n : current.getConfidants()){
+      printGossipers(n, e);
+    }
   }
 }
